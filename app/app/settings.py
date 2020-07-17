@@ -16,7 +16,8 @@ import environ
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, ["*"]),
-    WEBSITE_URL=(str, '127.0.0.1:8000')
+    WEBSITE_URL=(str, '127.0.0.1:8000'),
+    LOCAL_DEV=(bool, False)
 )
 environ.Env.read_env("../.env")
 
@@ -238,4 +239,13 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
 ADMINS = [tuple(adm.split(':')) for adm in env.list('ADMINS')]
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+LOCAL_DEV = env.bool('LOCAL_DEV')
+if LOCAL_DEV:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = env.str('EMAIL_HOST')
+    EMAIL_PORT = env.str('EMAIL_PORT')
+    EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_TLS = env.str('EMAIL_USE_TLS', False)
+    EMAIL_USE_SSL = env.str('EMAIL_USE_SSL', False)

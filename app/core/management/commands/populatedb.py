@@ -61,7 +61,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.make_database_faster()
         if options["createsuperuser"]:
-            credentials = {"email": "vlad@admin.com", "password": "123"}
+            credentials = {"email": "vladimir.gorea@gmail.com", "password": "123"}
             msg = self.create_superuser(credentials)
             self.stdout.write(msg)
 
@@ -80,9 +80,9 @@ class Command(BaseCommand):
             Service.objects.create(name=service)
         self.stdout.write('Created cities and services')
 
-        for i in range(20):
-            create_visa_agency()
-        self.stdout.write('Created 20 visa agencies')
+        # for i in range(20):
+        #     create_visa_agency()
+        # self.stdout.write('Created 20 visa agencies')
         for i in range(30):
             create_visa_agency_prospect()
         self.stdout.write('Created 30 visa agencies prospects')

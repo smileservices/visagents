@@ -41,7 +41,7 @@ def extract_values(d):
 @throttle_classes([SendQuoteRequestThrottle])
 @permission_classes([AllowAny])
 def quote_request(request):
-    data = loads(request.body)
+    data = request.data
     try:
         # check if expat with same email already exist
         city = City.objects.get(pk=extract_values(data['userData']['city']))
