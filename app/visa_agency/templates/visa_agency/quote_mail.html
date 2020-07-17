@@ -1,0 +1,23 @@
+Hello, {{ agency.name }},
+
+We are visagents.com, a service for bringing you customers!
+{{ expat.name }} from {{ quote_request.expat.city }} wants a price quote for {{ quote_request.service }}.
+{{ expat.name }}'s nationality is {{ expat.nationality_str }} and is here on a {{ quote_request.visa.type }} type of visa.
+
+More details about the {{ expat.name }}'s visa:
+Expiration Date: {{ quote_request.visa.expiration }}
+Issue Date: {{ quote_request.visa.issue_date }}
+Issue Place: {{ quote_request.visa.issue_place }}
+Entry Date: {{ quote_request.visa.entry_date }}
+Entry Port: {{ quote_request.visa.entry_port }}
+
+{{ expat.name }} contact details:
+Email: {{ expat.email }}
+Phone: {{ expat.phone }}
+City: {{ expat.city }}
+
+Have a great day!
+visagents.com'
+
+
+If you don't want to receive anymore messages, click on this unsubscribe url: {{ unsubscribe_url }}',

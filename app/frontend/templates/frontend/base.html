@@ -1,0 +1,25 @@
+{% load static %}
+{% load i18n %}
+<html lang="en" class=" flrylpmyim idc0_319">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>visagents.com</title>
+    <meta name="description" content="Get free quotes from visa agencies">
+    <meta name="keywords"
+          content="Get free quote from visa agencies for visa related services">
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600|Montserrat:200,300,400" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "frontend/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "fontawesome/css/all.min.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/style.css" %}">
+{#    <link rel="stylesheet" href="{% static "frontend/landing-2.css" %}">#}
+</head>
+<body data-spy="scroll" data-target="#pb-navbar" data-offset="200">
+{% block content %}{% endblock %}
+<script src="{% static "frontend/jquery.min.js" %}"></script>
+<script src="{% static "frontend/popper.min.js" %}"></script>
+<script src="{% static "frontend/bootstrap.min.js" %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

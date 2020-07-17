@@ -1,0 +1,18 @@
+New Visa Service Request:
+
+{{ expat.name }} from {{ quote_request.expat.city }} wants quote for {{ quote_request.service }}:
+{{ expat.name }}'s nationality is {{ expat.nationality_str }} and is here on a {{ visa.type }} type of visa.
+
+{{ expat.name }}'s visa:
+Expiration Date: {{ visa.expiration }}
+Issue Date: {{ visa.issue_date }}
+Issue Place: {{ visa.issue_place }}
+Entry Date: {{ visa.entry_date }}
+Entry Port: {{ visa.entry_port }}
+
+{{ expat.name }} contact details:
+Email: {{ expat.email }}
+Phone: {{ expat.phone }}
+City: {{ expat.city }}
+
+<a href="{{ approve_url }}">APPROVE</a>
