@@ -21,6 +21,10 @@ class SendQuoteRequestThrottle(UserRateThrottle):
     rate = '30/day'
 
 
+class RegisterAgencyProspectThrottle(UserRateThrottle):
+    rate = '10/day'
+
+
 def homepage(request):
     return render(request, 'frontend/homepage.html')
 
@@ -114,7 +118,7 @@ def quote_request(request):
         mail_body,
         'dontreply@visagents.com',
         [expat.email, ],
-        reply_to=['mail@visagents.com'],
+        reply_to=['vladimir.gorea@gmail.com'],
         headers={'Message-ID': 'confirmation of visa quote request'},
     )
     email.send()
@@ -125,6 +129,49 @@ def quote_request(request):
     })
 
 
+@api_view(http_method_names=['POST'])
+@throttle_classes([RegisterAgencyProspectThrottle])
+@permission_classes([AllowAny])
+def register_visa_agency_prospect(request):
+    data = request.data
+    try:
+        VisaAgencyProspect.objects.get(email=data['email'])
+        return Response({
+            'hasError': False,
+            'success': True,
+            'text': f'We already have you registered as an agency! If you are not receiving visa requests, please contact our support.'
+        })
+    except VisaAgencyProspect.DoesNotExist:
+        pass
+    city = City.objects.get(pk=extract_values(data['city']))
+    prospect = VisaAgencyProspect(
+        name=data['name'],
+        email=data['email'],
+        city=city,
+        unsubscribe=True
+    )
+    prospect.save()
+    mail_template = get_template('frontend/prospect_register_mail.html')
+    mail_body = mail_template.render(context={
+        'agency': prospect,
+        'confirm_url': settings.WEBSITE_URL + reverse('prospect-confirm') + f'?uuid={prospect.uuid.__str__()}'
+    })
+    email = EmailMessage(
+        'Confirm your email',
+        mail_body,
+        'dontreply@visagents.com',
+        [prospect.email, ],
+        reply_to=['vladimir.gorea@gmail.com'],
+        headers={'Message-ID': 'confirmation of visa agency registration'},
+    )
+    email.send()
+    return Response({
+        'hasError': False,
+        'success': True,
+        'text': f'Email containing confirmation link was sent to {prospect.email}. Please click on the provided link to start receiving emails.'
+    })
+
+
 def send_quote_request_to_admin(quote_request):
     template = get_template('frontend/admin_quote_mail.html')
     admin_user = CustomUser.objects.get(is_staff=True)
@@ -132,13 +179,40 @@ def send_quote_request_to_admin(quote_request):
         'quote_request': quote_request,
         'expat': quote_request.expat,
         'visa': quote_request.visa,
-        'approve_url': settings.WEBSITE_URL + reverse('admin_approve') + f'?adm_key={admin_user.uuid.__str__()}&req_key={quote_request.uuid.__str__()}'
+        'approve_url': settings.WEBSITE_URL + reverse(
+            'admin_approve') + f'?adm_key={admin_user.uuid.__str__()}&req_key={quote_request.uuid.__str__()}'
     })
 
     mail_admins(
         'New visa quote request',
         email_body
     )
+
+
+def confirm_prospect_email(request):
+    prospect_uuid = request.GET.get('uuid')
+    data = {
+        'status': 'Could not confirm :(',
+        'message': 'The provided link is missing request key.'
+    }
+    if prospect_uuid:
+        try:
+            prospect = VisaAgencyProspect.objects.get(uuid=prospect_uuid)
+            prospect.unsubscribe = False
+            prospect.save()
+            data['status'] = 'Success!'
+            data['message'] = f'Your visa agency was successfully registered'
+            mail_admins(
+                'new prospect registered',
+                f'Prospect {prospect.name} from {prospect.city} registered',
+            )
+        except VisaAgencyProspect.DoesNotExist:
+            data['status'] = 'Could not confirm :('
+            data['message'] = 'Confirm request is not valid!'
+        except ValidationError:
+            data['status'] = 'Could not confirm :('
+            data['message'] = 'Confirm request is not valid!'
+    return render(request, 'frontend/withmessage.html', data)
 
 
 def admin_confirm_quote_request(request):

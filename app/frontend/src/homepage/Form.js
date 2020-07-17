@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from "react";
-import ReactDOM from "react-dom";
 import Select from 'react-select'
 import {getCsrfToken} from "../../../src/components/utils";
-import {list} from "../../../src/api_interface/list";
 
 function UserForm({data, countryList, citiesList, onSubmit}) {
     const [formData, setFormData] = useState(data);
@@ -32,7 +30,7 @@ function UserForm({data, countryList, citiesList, onSubmit}) {
                        value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}/>
             </div>
             <div className="form-group">
-                <input key="form_email" type="text" className="form-control pb_height-50 reverse" required={true}
+                <input key="form_email" type="email" className="form-control pb_height-50 reverse" required={true}
                        placeholder="Email"
                        value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
                 />
@@ -202,32 +200,32 @@ function VisaForm({data, onSubmit, onBack}) {
     )
 }
 
-function FormSubmitted({alert}) {
+export function FormSubmitted({alert}) {
     return (
         <div className={"alert alert-" + alert.type}>{alert.text}</div>
     )
 }
 
-function QuoteForm() {
+export function QuoteForm({countryList, citiesList, servicesList}) {
     const emptyUserData = {
-        'name': 'vlad gorica',
-        'email': 'mail@mail.com',
-        'phone': '01283829884',
-        'nationality': [{value: 'RO', label: 'Romania'}],
-        'city': {value: '12', label: 'Danang'},
+        'name': '',
+        'email': '',
+        'phone': '',
+        'nationality': [],
+        'city': {},
     }
     const emptyServiceData = {
-        'service': {value: '3', label: 'Visa Extension 3 month'},
+        'service': {},
         'persons': 1,
         'note': ''
     }
     const emptyVisaData = {
-        'type': 'turist visa',
-        'issue_place': 'HCMC',
-        'issue_date': '2020-01-20',
-        'expiration': '2020-06-20',
-        'entry_port': 'HCMC',
-        'entry_date': '2020-01-20',
+        'type': '',
+        'issue_place': '',
+        'issue_date': '',
+        'expiration': '',
+        'entry_port': '',
+        'entry_date': '',
     }
 
     const [step, setStep] = useState(1);
@@ -236,60 +234,6 @@ function QuoteForm() {
     const [visaData, setVisaData] = useState(emptyVisaData);
     const [alert, setAlert] = useState({});
 
-    const [countryList, setCountryList] = useState([]);
-    const [servicesList, setServicesList] = useState([]);
-    const [citiesList, setCitiesList] = useState([]);
-
-    function get_countries() {
-        fetch(DATA_ENDPOINT.countries, {
-            method: "GET"
-        }).then(result => {
-            //todo set waiting
-            if (result.ok) {
-                return result.json();
-            } else {
-                setAlert('Could not read data: ' + result.statusText)
-            }
-        }).then(data => {
-            setCountryList(data);
-        })
-    }
-
-    function get_cities() {
-        fetch(DATA_ENDPOINT.cities, {
-            method: "GET"
-        }).then(result => {
-            //todo set waiting
-            if (result.ok) {
-                return result.json();
-            } else {
-                setAlert('Could not read data: ' + result.statusText)
-            }
-        }).then(data => {
-            setCitiesList(data);
-        })
-    }
-
-    function get_services() {
-        fetch(DATA_ENDPOINT.services, {
-            method: "GET"
-        }).then(result => {
-            //todo set waiting
-            if (result.ok) {
-                return result.json();
-            } else {
-                setAlert('Could not read data: ' + result.statusText)
-            }
-        }).then(data => {
-            setServicesList(data);
-        })
-    }
-
-    useEffect(() => {
-        get_countries();
-        get_cities();
-        get_services();
-    }, [])
 
     function sentQuoteRequest(userData, serviceData, visaData) {
         setAlert({
@@ -356,7 +300,3 @@ function QuoteForm() {
             return <FormSubmitted alert={alert}/>;
     }
 }
-
-
-const wrapper = document.getElementById("quote_form");
-wrapper ? ReactDOM.render(<QuoteForm/>, wrapper) : null;
