@@ -36,7 +36,7 @@ function UserForm({data, countryList, citiesList, onSubmit}) {
                 />
             </div>
             <div className="form-group">
-                <input key="form_phone" type="text" className="form-control pb_height-50 reverse" required={true}
+                <input key="form_phone" type="text" className="form-control pb_height-50 reverse"
                        placeholder="Phone (optional)"
                        value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})}
                 />
@@ -290,7 +290,7 @@ export function QuoteForm({countryList, citiesList, servicesList}) {
         case 3:
             return <VisaForm data={visaData} onSubmit={formData => {
                 setVisaData(formData);
-                sentQuoteRequest(userData, serviceData, visaData);
+                sentQuoteRequest(userData, serviceData, formData);
                 setStep(4);
             }} onBack={formData => {
                 setVisaData(formData);
