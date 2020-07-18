@@ -212,10 +212,10 @@ export function QuoteForm({countryList, citiesList, servicesList}) {
         'email': '',
         'phone': '',
         'nationality': [],
-        'city': {},
+        'city': '',
     }
     const emptyServiceData = {
-        'service': {},
+        'service': '',
         'persons': 1,
         'note': ''
     }
