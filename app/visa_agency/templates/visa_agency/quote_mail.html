@@ -3,6 +3,9 @@ Hello, {{ agency.name }},
 We are visagents.com, a service for bringing you customers!
 {{ expat.name }} from {{ quote_request.expat.city }} wants a price quote for {{ quote_request.service }}.
 {{ expat.name }}'s nationality is {{ expat.nationality_str }} and is here on a {{ quote_request.visa.type }} type of visa.
+{% if quote_request.note %}
+Note: {{ quote_request.note }}
+{% endif %}
 
 More details about the {{ expat.name }}'s visa:
 Expiration Date: {{ quote_request.visa.expiration }}
