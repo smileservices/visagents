@@ -10,7 +10,6 @@ urlpatterns = [
     path('superadmin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('admin/', admin.site.urls),
 ]
 
 urlpatterns += router.urls

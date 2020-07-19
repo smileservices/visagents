@@ -26,7 +26,7 @@ class RegisterAgencyProspectThrottle(UserRateThrottle):
 
 
 def homepage(request):
-    return render(request, 'frontend/homepage.html')
+    return render(request, 'frontend/homepage.html', context={'base_url': settings.WEBSITE_URL})
 
 
 def extract_values(d):
