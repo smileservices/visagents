@@ -34,3 +34,4 @@ def send_quote_mails(quote_request):
         )
         prospect_email.send()
         agency.mails += 1
+        agency.save()
