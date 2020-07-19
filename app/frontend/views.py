@@ -125,7 +125,7 @@ def quote_request(request):
     return Response({
         'hasError': False,
         'success': True,
-        'text': f'Email containing confirmation link was sent to {expat.email}. Please click on the provided link to activate the request and to send it to {count_agencies} visa agents in {expat.city}'
+        'text': f'Email containing confirmation link was sent to {expat.email}. Search inbox for email from {settings.EMAIL_EXPATS_FROM} address. Please click on the provided link to activate the request and to send it to {count_agencies} visa agents in {expat.city}'
     })
 
 
@@ -168,7 +168,7 @@ def register_visa_agency_prospect(request):
     return Response({
         'hasError': False,
         'success': True,
-        'text': f'Email containing confirmation link was sent to {prospect.email}. Please click on the provided link to start receiving emails.'
+        'text': f'Email containing confirmation link was sent to {prospect.email}. Search inbox for email from {settings.EMAIL_QUOTES_FROM} address. Please click on the provided link to start receiving emails.'
     })
 
 
