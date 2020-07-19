@@ -29,7 +29,7 @@ def send_quote_mails(quote_request):
             mail_body,
             settings.EMAIL_QUOTES_FROM,
             [agency.email, ],
-            reply_to=[settings.EMAIL_REPLY_TO],
+            reply_to=[expat.email],
             headers={'Message-ID': 'Service Quote Request'},
         )
         prospect_email.send()
