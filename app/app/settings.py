@@ -240,6 +240,7 @@ LOGOUT_REDIRECT_URL = 'login'
 
 ADMINS = [tuple(adm.split(':')) for adm in env.list('ADMINS')]
 LOCAL_DEV = env.bool('LOCAL_DEV')
+
 if LOCAL_DEV:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
@@ -249,3 +250,7 @@ else:
     EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
     EMAIL_USE_TLS = env.str('EMAIL_USE_TLS', False)
     EMAIL_USE_SSL = env.str('EMAIL_USE_SSL', False)
+
+EMAIL_REPLY_TO = env.str('EMAIL_REPLY_TO')
+EMAIL_QUOTES_FROM = env.str('EMAIL_QUOTES_FROM')
+EMAIL_EXPATS_FROM = env.str('EMAIL_EXPATS_FROM')

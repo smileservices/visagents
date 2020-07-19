@@ -116,9 +116,9 @@ def quote_request(request):
     email = EmailMessage(
         'Confirm your visa service request',
         mail_body,
-        'dontreply@visagents.com',
+        settings.EMAIL_EXPATS_FROM,
         [expat.email, ],
-        reply_to=['vladimir.gorea@gmail.com'],
+        reply_to=[settings.EMAIL_REPLY_TO],
         headers={'Message-ID': 'confirmation of visa quote request'},
     )
     email.send()
@@ -159,9 +159,9 @@ def register_visa_agency_prospect(request):
     email = EmailMessage(
         'Confirm your email',
         mail_body,
-        'dontreply@visagents.com',
+        settings.EMAIL_QUOTES_FROM,
         [prospect.email, ],
-        reply_to=['vladimir.gorea@gmail.com'],
+        reply_to=[settings.EMAIL_REPLY_TO],
         headers={'Message-ID': 'confirmation of visa agency registration'},
     )
     email.send()

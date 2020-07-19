@@ -27,9 +27,9 @@ def send_quote_mails(quote_request):
         prospect_email = EmailMessage(
             f'Request for {quote_request.service}',
             mail_body,
-            'dontreply@visagents.com',
+            settings.EMAIL_QUOTES_FROM,
             [agency.email, ],
-            reply_to=['mail@visagents.com'],
+            reply_to=[settings.EMAIL_REPLY_TO],
             headers={'Message-ID': 'Service Quote Request'},
         )
         prospect_email.send()
