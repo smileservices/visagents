@@ -224,8 +224,10 @@ def admin_confirm_quote_request(request):
     }
     try:
         CustomUser.objects.get(uuid=admin_uuid, is_staff=True)
-        quote_request = VisaQuoteRequestModel.objects.get(uuid=request_uuid)
+        quote_request = VisaQuoteRequestModel.objects.get(uuid=request_uuid, active=False)
         agency_helpers.send_quote_mails(quote_request)
+        quote_request.active = True
+        quote_request.save()
         data = {
             'status': 'Emails sent',
             'message': 'All good'
@@ -238,7 +240,7 @@ def admin_confirm_quote_request(request):
     except VisaQuoteRequestModel.DoesNotExist:
         data = {
             'status': 'Can\'t Find Quote Request',
-            'message': 'Could not find the quote request'
+            'message': 'Could not find the quote request or emails have been already sent'
         }
     except ValidationError:
         data['status'] = 'Could not confirm :('
@@ -255,8 +257,6 @@ def confirm_quote_request(request):
     if expat_uuid:
         try:
             quote_request = VisaQuoteRequestModel.objects.get(uuid=expat_uuid)
-            quote_request.active = True
-            quote_request.save()
             data['status'] = 'Success!'
             data[
                 'message'] = f'Your visa quote request has been validated and will be sent to visa agencies in {quote_request.expat.city}'
