@@ -1,8 +1,8 @@
-from django.core.mail import EmailMessage
 from .models import VisaAgencyModel, VisaAgencyProspect
 from django.urls import reverse
 from django.conf import settings
 from django.template.loader import get_template
+from core.tasks import email_bg
 
 
 def count_city_agencies(city):
@@ -24,14 +24,13 @@ def send_quote_mails(quote_request):
             'quote_request': quote_request,
             'unsubscribe_url': settings.WEBSITE_URL + reverse('agency_unsubscribe') + '?uuid=' + agency.uuid.__str__()
         })
-        prospect_email = EmailMessage(
-            f'Request for {quote_request.service}',
-            mail_body,
-            settings.EMAIL_QUOTES_FROM,
-            [agency.email, ],
+        email_bg(
+            subject=f'Request for {quote_request.service}',
+            body=mail_body,
+            sender=settings.EMAIL_QUOTES_FROM,
+            destination=[agency.email, ],
             reply_to=[expat.email],
             headers={'Message-ID': 'Service Quote Request'},
         )
-        prospect_email.send()
         agency.mails += 1
         agency.save()

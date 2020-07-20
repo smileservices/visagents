@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.core.mail import EmailMessage, mail_admins
 from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from json import loads, dumps
@@ -15,6 +14,7 @@ from visa_agency import helpers as agency_helpers
 from django.conf import settings
 from django.template.loader import get_template
 from users.models import CustomUser
+from core.tasks import email_bg, mail_admins_bg
 
 
 class SendQuoteRequestThrottle(UserRateThrottle):
@@ -113,15 +113,14 @@ def quote_request(request):
             'confirm-quote-request') + '?request_uuid=' + quote_request.uuid.__str__(),
         'agencies_count': count_agencies
     })
-    email = EmailMessage(
-        'Confirm your visa service request',
-        mail_body,
-        settings.EMAIL_EXPATS_FROM,
-        [expat.email, ],
+    email_bg(
+        subject='Confirm your visa service request',
+        body=mail_body,
+        sender=settings.EMAIL_EXPATS_FROM,
+        destination=[expat.email, ],
         reply_to=[settings.EMAIL_REPLY_TO],
         headers={'Message-ID': 'confirmation of visa quote request'},
     )
-    email.send()
     return Response({
         'hasError': False,
         'success': True,
@@ -156,15 +155,14 @@ def register_visa_agency_prospect(request):
         'agency': prospect,
         'confirm_url': settings.WEBSITE_URL + reverse('prospect-confirm') + f'?uuid={prospect.uuid.__str__()}'
     })
-    email = EmailMessage(
-        'Confirm your email',
-        mail_body,
-        settings.EMAIL_QUOTES_FROM,
-        [prospect.email, ],
+    email_bg(
+        subject='Confirm your email',
+        body=mail_body,
+        sender=settings.EMAIL_QUOTES_FROM,
+        destination=[prospect.email, ],
         reply_to=[settings.EMAIL_REPLY_TO],
         headers={'Message-ID': 'confirmation of visa agency registration'},
     )
-    email.send()
     return Response({
         'hasError': False,
         'success': True,
@@ -183,7 +181,7 @@ def send_quote_request_to_admin(quote_request):
             'admin_approve') + f'?adm_key={admin_user.uuid.__str__()}&req_key={quote_request.uuid.__str__()}'
     })
 
-    mail_admins(
+    mail_admins_bg(
         'New visa quote request',
         email_body
     )
@@ -202,7 +200,7 @@ def confirm_prospect_email(request):
             prospect.save()
             data['status'] = 'Success!'
             data['message'] = f'Your visa agency was successfully registered'
-            mail_admins(
+            mail_admins_bg(
                 'new prospect registered',
                 f'Prospect {prospect.name} from {prospect.city} registered',
             )
@@ -305,7 +303,7 @@ def agency_unsubscribe(request):
             agency.save()
             data['status'] = 'Unsubscribed :('
             data['message'] = 'You\'ve been successfully unsubscribed'
-            mail_admins(
+            mail_admins_bg(
                 f'{agency} unsubscribed',
                 f'{agency} just unsubscribed'
             )

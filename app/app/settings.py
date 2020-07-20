@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
+    'background_task',
     # our app
     'core',
     'rest_framework',
