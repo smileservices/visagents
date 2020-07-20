@@ -191,7 +191,8 @@ def confirm_prospect_email(request):
     prospect_uuid = request.GET.get('uuid')
     data = {
         'status': 'Could not confirm :(',
-        'message': 'The provided link is missing request key.'
+        'message': 'The provided link is missing request key.',
+        'base_url': settings.WEBSITE_URL
     }
     if prospect_uuid:
         try:
@@ -218,7 +219,8 @@ def admin_confirm_quote_request(request):
     admin_uuid = request.GET['adm_key']
     data = {
         'status': 'Could not confirm :(',
-        'message': 'The provided link is missing request key.'
+        'message': 'The provided link is missing request key.',
+        'base_url': settings.WEBSITE_URL
     }
     try:
         CustomUser.objects.get(uuid=admin_uuid, is_staff=True)
@@ -233,7 +235,8 @@ def admin_confirm_quote_request(request):
     except CustomUser.DoesNotExist:
         data = {
             'status': 'Forbidden',
-            'message': 'You are forbidden to take this action'
+            'message': 'You are forbidden to take this action',
+            'base_url': settings.WEBSITE_URL
         }
     except VisaQuoteRequestModel.DoesNotExist:
         data = {
@@ -250,7 +253,8 @@ def confirm_quote_request(request):
     expat_uuid = request.GET.get('request_uuid')
     data = {
         'status': 'Could not confirm :(',
-        'message': 'The provided link is missing request key.'
+        'message': 'The provided link is missing request key.',
+        'base_url': settings.WEBSITE_URL
     }
     if expat_uuid:
         try:
@@ -272,7 +276,8 @@ def expat_unsubscribe(request):
     uuid = request.GET.get('uuid')
     data = {
         'status': 'Bad link :(',
-        'message': 'The provided link is missing your key.'
+        'message': 'The provided link is missing your key.',
+        'base_url': settings.WEBSITE_URL
     }
     if uuid:
         try:
@@ -294,7 +299,8 @@ def agency_unsubscribe(request):
     uuid = request.GET.get('uuid')
     data = {
         'status': 'Bad link :(',
-        'message': 'The provided link is missing your key.'
+        'message': 'The provided link is missing your key.',
+        'base_url': settings.WEBSITE_URL
     }
     if uuid:
         try:
