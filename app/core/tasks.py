@@ -16,7 +16,7 @@ def email_bg(subject: str, body: str, sender: str, destination: list, reply_to: 
         f'==================================================\n'
         f'Sent mail to {destination} with subject {subject}:\n'
         f'sender: {sender}, reply_to: {reply_to}, body:\n'
-        f'{body}'
+        f'{body}\n'
         f'==================================================\n'
         f'response: {response}'
     )
