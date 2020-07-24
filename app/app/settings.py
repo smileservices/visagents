@@ -12,13 +12,17 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, ["*"]),
     WEBSITE_URL=(str, '127.0.0.1:8000'),
-    LOCAL_DEV=(bool, False)
+    LOCAL_DEV=(bool, False),
+    SENTRY_DNS=(str, '')
 )
+
 environ.Env.read_env("../.env")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -121,31 +125,43 @@ WSGI_APPLICATION = 'app.wsgi.application'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'app_file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': env.str('LOG_FILE_PATH'),
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
         },
-        'autotranslate_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': env.str('LOG_AUTOTRANSLATE_FILE_PATH'),
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['app_file'],
-            'level': 'DEBUG',
-            'propagate': True,
+        'root': {
+            'handlers': ['console'],
+            'level': 'WARNING',
         },
-        'autotranslate': {
-            'handlers': ['autotranslate_file'],
-            'level': 'INFO',
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',
             'propagate': True,
         },
     },
 }
+
+sentry_sdk.init(
+    dsn=env.str('SENTRY_DSN'),
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
