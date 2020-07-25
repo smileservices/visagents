@@ -131,7 +131,7 @@ LOGGING = {
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {message}',
+            'format': '{asctime} {levelname} {message}',
             'style': '{',
         },
     },
@@ -140,17 +140,27 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
+        'tasks_log': {
+            'class': 'logging.FileHandler',
+            'filename': env.str('TASKS_LOG'),
+            'formatter': 'simple'
+        }
     },
     'loggers': {
         'root': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'WARNING',
         },
         'django': {
             'handlers': ['console'],
             'level': 'WARNING',
-            'propagate': True,
+            'propagate': False,
         },
+        'tasks': {
+            'handlers': ['tasks_log'],
+            'level': 'INFO',
+            'propagate': False
+        }
     },
 }
 

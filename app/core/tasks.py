@@ -3,7 +3,7 @@ from django.core.mail import EmailMessage
 from django.core.mail import mail_admins
 from logging import getLogger
 
-logger = getLogger(__name__)
+logger = getLogger('tasks')
 
 
 @background
@@ -13,12 +13,14 @@ def email_bg(subject: str, body: str, sender: str, destination: list, reply_to: 
     )
     response = email.send()
     logger.info(
+        f'\n'
         f'==================================================\n'
         f'Sent mail to {destination} with subject {subject}:\n'
         f'sender: {sender}, reply_to: {reply_to}, body:\n'
         f'{body}\n'
         f'==================================================\n'
         f'response: {response}'
+        f'\n'
     )
 
 
